@@ -156,7 +156,7 @@ else:
     if st.session_state.delete_index is not None:
         del st.session_state.scenes[st.session_state.delete_index]
         st.session_state.delete_index = None
-        st.experimental_rerun()
+        st.rerun()
 
 
 # -------------------------------------------------------
