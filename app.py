@@ -138,17 +138,25 @@ st.header("Current Scenes")
 if "scenes" not in st.session_state or len(st.session_state.scenes) == 0:
     st.info("No scenes added yet.")
 else:
+    if "delete_index" not in st.session_state:
+        st.session_state.delete_index = None
+
     for i, scene in enumerate(st.session_state.scenes):
         with st.expander(f"Scene {i+1}: {scene['name']}"):
-            st.write(f"[scene]")
+            st.write("[scene]")
             st.write(f"- name: {scene['name']}")
             st.write(f"- image_mode: {scene['image_mode']}")
             st.write(f"- image_data: {scene['image_data']}")
             st.write(f"- content: {scene['content']}")
 
             if st.button(f"Remove scene {i+1}", key=f"remove_scene_{i}"):
-                st.session_state.scenes.pop(i)
-                st.experimental_rerun()
+                st.session_state.delete_index = i
+
+    # After rendering all scenes (safe deletion)
+    if st.session_state.delete_index is not None:
+        del st.session_state.scenes[st.session_state.delete_index]
+        st.session_state.delete_index = None
+        st.experimental_rerun()
 
 
 # -------------------------------------------------------
