@@ -371,7 +371,7 @@ def add_title_to_frame(frame, text, font_path=None):
     
     # Larger font for title
     try:
-        font = ImageFont.truetype("./fonts/Roboto-Bold.ttf", 120)  # Reduced from 200
+        font = ImageFont.truetype("./fonts/THSarabunNew-Bold.ttf", 120)  # Reduced from 200
         st.success("✅ Title font loaded: 120px")
     except Exception as e:
         st.error(f"❌ Title font failed: {e}")
@@ -501,7 +501,7 @@ def add_subtitle_to_frame(frame, text, font_path=None):
     
     # Use font from ./fonts/ directory
     try:
-        font = ImageFont.truetype("./fonts/Roboto-Bold.ttf", font_size)
+        font = ImageFont.truetype("./fonts/THSarabunNew-Bold.ttf", font_size)
     except:
         font = ImageFont.load_default()
     
