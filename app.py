@@ -8,17 +8,21 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import time
 import subprocess
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Try to load .env file if available (for local development)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not installed (fine for Streamlit Cloud)
+    pass
 
 # Load ElevenLabs API key from environment or Streamlit secrets
 try:
-    # Try .env first (local development)
+    # Try environment variable first (from .env or system)
     ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
     
-    # If not in .env, try Streamlit secrets (cloud deployment)
+    # If not in environment, try Streamlit secrets (cloud deployment)
     if not ELEVENLABS_API_KEY:
         ELEVENLABS_API_KEY = st.secrets.get("ELEVENLABS_API_KEY", "")
 except:
@@ -112,7 +116,7 @@ def text_to_speech_elevenlabs(text: str, voice_id: str, api_key: str, output_pat
     
     data = {
         "text": text,
-        "model_id": "eleven_multilingual_v2",
+        "model_id": "eleven_v3",  # v3 model supports Thai language
         "voice_settings": {
             "stability": 0.5,
             "similarity_boost": 0.75,
@@ -351,7 +355,7 @@ def create_professional_frame(image_path: str, width: int, height: int) -> np.nd
     # Paste main image in UPPER portion (centered horizontally, positioned lower in upper area)
     x_offset = (width - new_width) // 2
     # Center vertically in upper portion, then push down a bit
-    y_offset = (available_height - new_height) // 2 + int(available_height * 0.07)  # Push down 7%
+    y_offset = (available_height - new_height) // 2 + int(available_height * 0.15)  # Push down 15%
     bg_img.paste(main_img, (x_offset, y_offset))
     
     # Convert to numpy array for OpenCV
@@ -579,8 +583,8 @@ def create_video_from_cells(cells, settings, elevenlabs_api_key: str, output_pat
     
     # Voice ID mapping
     voice_map = {
-        "looknarm": st.session_state.get("looknarm_voice_id", "21m00Tcm4TlvDq8ikWAM"),
-        "santi": st.session_state.get("santi_voice_id", "21m00Tcm4TlvDq8ikWAM"),
+        "looknarm": st.session_state.get("looknarm_voice_id", "DGS95EuFRpKb6qGTgktO"),
+        "santi": st.session_state.get("santi_voice_id", "44NdXk4X8FxnONM4FmXN"),
         "custom": st.session_state.get("custom_voice_id", ""),
     }
     
@@ -794,10 +798,10 @@ if "settings" not in st.session_state:
     }
 
 if "looknarm_voice_id" not in st.session_state:
-    st.session_state.looknarm_voice_id = "21m00Tcm4TlvDq8ikWAM"
+    st.session_state.looknarm_voice_id = "DGS95EuFRpKb6qGTgktO"
 
 if "santi_voice_id" not in st.session_state:
-    st.session_state.santi_voice_id = "21m00Tcm4TlvDq8ikWAM"
+    st.session_state.santi_voice_id = "44NdXk4X8FxnONM4FmXN"
 
 if "custom_voice_id" not in st.session_state:
     st.session_state.custom_voice_id = ""
