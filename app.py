@@ -355,7 +355,7 @@ def create_professional_frame(image_path: str, width: int, height: int) -> np.nd
     # Paste main image in UPPER portion (centered horizontally, positioned lower in upper area)
     x_offset = (width - new_width) // 2
     # Center vertically in upper portion, then push down a bit
-    y_offset = (available_height - new_height) // 2 + int(available_height * 0.15)  # Push down 15%
+    y_offset = (available_height - new_height) // 2 + int(available_height * 0.07)  # Push down 7%
     bg_img.paste(main_img, (x_offset, y_offset))
     
     # Convert to numpy array for OpenCV
