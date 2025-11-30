@@ -13,6 +13,19 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Load ElevenLabs API key from environment or Streamlit secrets
+try:
+    # Try .env first (local development)
+    ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+    
+    # If not in .env, try Streamlit secrets (cloud deployment)
+    if not ELEVENLABS_API_KEY:
+        ELEVENLABS_API_KEY = st.secrets.get("ELEVENLABS_API_KEY", "")
+except:
+    # Fallback if secrets not configured
+    ELEVENLABS_API_KEY = ""
+
+
 # -------------------------------------------------------
 # PROJECT SETUP
 # -------------------------------------------------------
@@ -32,9 +45,6 @@ os.makedirs(VOICE_DIR, exist_ok=True)
 os.makedirs(AVATAR_DIR, exist_ok=True)
 os.makedirs(VIDEO_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
-
-# Load ElevenLabs API key from environment
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
 
 
 # -------------------------------------------------------
@@ -805,10 +815,12 @@ with st.expander("📌 Video Settings (Required)", expanded=True):
 
     # Show API key status
     if ELEVENLABS_API_KEY:
-        st.success(f"✅ ElevenLabs API Key loaded from .env (ends with: ...{ELEVENLABS_API_KEY[-4:]})")
+        st.success(f"✅ ElevenLabs API Key loaded (ends with: ...{ELEVENLABS_API_KEY[-4:]})")
     else:
-        st.error("❌ ElevenLabs API Key not found in .env file")
-        st.info("💡 Make sure your .env file contains: ELEVENLABS_API_KEY=your_key_here")
+        st.error("❌ ElevenLabs API Key not found")
+        st.info("💡 Add your API key in one of these ways:")
+        st.info("• **Local**: Create .env file with ELEVENLABS_API_KEY=your_key_here")
+        st.info("• **Streamlit Cloud**: Add ELEVENLABS_API_KEY in app Settings → Secrets")
 
     # Title
     st.session_state.settings["title"] = st.text_input(
@@ -1146,10 +1158,10 @@ with col2:
             if not st.session_state.get("custom_voice_id"):
                 errors.append("Custom voice selected but no Voice ID provided")
             elif not ELEVENLABS_API_KEY:
-                errors.append("ElevenLabs API key not found in .env file")
+                errors.append("ElevenLabs API key not configured (check .env or Streamlit secrets)")
         elif voice_profile in ["looknarm", "santi"]:
             if not ELEVENLABS_API_KEY:
-                errors.append("ElevenLabs API key not found in .env file")
+                errors.append("ElevenLabs API key not configured (check .env or Streamlit secrets)")
         
         if errors:
             for err in errors:
